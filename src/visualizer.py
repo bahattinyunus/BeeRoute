@@ -46,9 +46,9 @@ class HiveVisualizer:
                 node_size=600
             )
 
-        plt.title(f"BeeRoute Optimization Result\nDistance: {distance:.2f} (Trabzon Metrics)", fontsize=14, fontweight='bold')
+        plt.title(f"BeeRoute Optimizasyon Sonucu\nMesafe: {distance:.2f} (Trabzon Metrikleri)", fontsize=14, fontweight='bold')
         plt.axis('off')
         
         plt.savefig(filename, bbox_inches='tight', facecolor='white')
-        print(f"[VISUALIZER] Graph saved to {filename}")
+        print(f"[GÖRSELLEŞTİRİCİ] Grafik kaydedildi: {filename}")
         plt.close()
