@@ -1,0 +1,20 @@
+
+# BeeRoute Colony Configuration
+# =============================
+# Define the operational parameters for the swarm intelligence.
+
+colony:
+  name: "Trabzon_Hive_01"
+  max_generations: 1000
+  population_size: 50
+  
+algorithm:
+  type: "Artificial Bee Colony (ABC)"
+  heuristics:
+    - "Shortest Path"
+    - "Energy Efficiency"
+    - "Traffic Avoidance"
+
+logging:
+  level: "DEBUG"
+  format: "HIVE_LOG :: %(message)s"

@@ -1,0 +1,122 @@
+
+"""
+BeeRoute: Hive Mind Core
+========================
+The central command node for the BeeRoute architecture.
+Simulates a swarm of agents effectively solving a routing problem.
+"""
+
+import time
+import random
+import sys
+import threading
+from colorama import init, Fore, Style
+from src.pheromone_matrix import PheromoneMatrix
+
+# Initialize colorama
+init(autoreset=True)
+
+class HiveMind:
+    def __init__(self, node_count=10, colony_size=20):
+        self.node_count = node_count
+        self.colony_size = colony_size
+        self.matrix = PheromoneMatrix(node_count)
+        self.best_global_route = None
+        self.best_global_score = float('inf')
+        self.lock = threading.Lock()
+
+    def log(self, level, message):
+        if level == "INFO":
+            print(f"{Fore.CYAN}[HIVE_INFO]{Style.RESET_ALL} {message}")
+        elif level == "SUCCESS":
+            print(f"{Fore.GREEN}[SUCCESS]{Style.RESET_ALL} {message}")
+        elif level == "WARN":
+            print(f"{Fore.YELLOW}[WARNING]{Style.RESET_ALL} {message}")
+        elif level == "CRITICAL":
+            print(f"{Fore.RED}[CRITICAL]{Style.RESET_ALL} {message}")
+
+    def _simulate_bee(self, bee_id):
+        """
+        A single bee exploring the graph (TSP simulation).
+        """
+        # Start at node 0
+        current_node = 0
+        unvisited = list(range(1, self.node_count))
+        path = [0]
+        distance = 0
+        
+        while unvisited:
+            # Choose next node based on pheromones (roulette wheel selection)
+            weights = self.matrix.get_probability_weights(current_node, unvisited)
+            next_node = random.choices(unvisited, weights=weights, k=1)[0]
+            
+            # Simulated distance (random for this demo)
+            dist = random.uniform(1.0, 10.0)
+            
+            path.append(next_node)
+            distance += dist
+            unvisited.remove(next_node)
+            current_node = next_node
+            
+            # Tiny sleep to visualize "work"
+            time.sleep(random.uniform(0.01, 0.05))
+
+        # Return to hive
+        path.append(0)
+        
+        with self.lock:
+            if distance < self.best_global_score:
+                self.best_global_score = distance
+                self.best_global_route = path
+                self.log("SUCCESS", f"Bee #{bee_id} discovered new optimal path! Dist: {distance:.2f}")
+                # Reinforce this good path
+                self.matrix.deposit(path, amount=10.0/distance)
+
+    def run_simulation(self, generations=5, visualize=False):
+        self.log("INFO", f"Initializing Trabzon Protocol... Nodes: {self.node_count}, Agents: {self.colony_size}")
+        time.sleep(1)
+        self.log("INFO", "Pheromone Matrix: ONLINE")
+        time.sleep(0.5)
+        
+        for generation in range(1, generations + 1):
+            print(f"\n{Fore.MAGENTA}--- GENERATION {generation} ---{Style.RESET_ALL}")
+            threads = []
+            for i in range(self.colony_size):
+                t = threading.Thread(target=self._simulate_bee, args=(i,))
+                threads.append(t)
+                t.start()
+            
+            for t in threads:
+                t.join()
+            
+            # Global evaporation
+            self.matrix.decay()
+            self.log("INFO", f"Generation {generation} complete. Global Pheromones updated.")
+
+        print(f"\n{Fore.GREEN}=========================================={Style.RESET_ALL}")
+        print(f"{Fore.GREEN}OPTIMIZATION COMPLETE{Style.RESET_ALL}")
+        print(f"Best Route: {self.best_global_route}")
+        print(f"Total Distance: {self.best_global_score:.2f}")
+        print(f"{Fore.GREEN}=========================================={Style.RESET_ALL}")
+
+        if visualize and self.best_global_route:
+            try:
+                from src.visualizer import HiveVisualizer
+                viz = HiveVisualizer(self.node_count)
+                viz.plot_route(self.best_global_route, self.best_global_score)
+                self.log("SUCCESS", "Visual report generated: route_result.png")
+            except ImportError as e:
+                self.log("WARN", f"Visualization failed: {e}")
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="BeeRoute: Trabzon Protocol Simulation")
+    parser.add_argument("--nodes", type=int, default=10, help="Number of nodes (cities) in the graph")
+    parser.add_argument("--bees", type=int, default=20, help="Number of forager bees")
+    parser.add_argument("--gens", type=int, default=5, help="Number of generations")
+    parser.add_argument("--visualize", action="store_true", help="Generate a visual graph of the route")
+    
+    args = parser.parse_args()
+    
+    hive = HiveMind(node_count=args.nodes, colony_size=args.bees)
+    hive.run_simulation(generations=args.gens, visualize=args.visualize)
