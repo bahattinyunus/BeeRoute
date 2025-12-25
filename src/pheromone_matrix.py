@@ -1,8 +1,11 @@
 
 """
-BeeRoute: Pheromone Matrix
-==========================
-Dynamic graph representation using efficient numpy operations.
+BeeRoute: Feromon Matrisi
+=========================
+Numpy operasyonlarını kullanan dinamik çizge temsili.
+
+Mimar: Bahattin Yunus Çetin (IT Architect)
+Lokasyon: Trabzon / Of
 """
 
 import numpy as np

@@ -1,9 +1,12 @@
-
 """
-BeeRoute: Hive Mind Core
-========================
-The central command node for the BeeRoute architecture.
-Simulates a swarm of agents effectively solving a routing problem.
+BeeRoute: Kovan Zihni Çekirdeği
+===============================
+BeeRoute mimarisinin merkezi komuta düğümü.
+Gezgin Satıcı Problemini çözen ajan sürüsünü simüle eder.
+
+Mimar: Bahattin Yunus Çetin (IT Architect)
+Lokasyon: Trabzon / Of
+Web: https://github.com/bahattinyunus
 """
 
 import time

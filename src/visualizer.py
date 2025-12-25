@@ -1,8 +1,11 @@
 
 """
-BeeRoute: Visualizer
-====================
-Generates visual representations of the colony's optimization process.
+BeeRoute: Görselleştirici
+=========================
+Koloninin optimizasyon sürecinin görsel temsillerini oluşturur.
+
+Mimar: Bahattin Yunus Çetin (IT Architect)
+Lokasyon: Trabzon / Of
 """
 
 import matplotlib.pyplot as plt
